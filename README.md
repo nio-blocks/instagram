@@ -14,7 +14,8 @@ Properties
 
 Python Package Dependencies
 ----------------
-None
+
+-   [requests](https://pypi.python.org/pypi/requests/)
 
 Commands
 ----------------
