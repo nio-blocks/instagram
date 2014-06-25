@@ -12,10 +12,11 @@ Properties
 -   **retry_interval**: When a url request fails, how long to wait before attempting to try again.
 -   **retry_limit**: When a url request fails, number of times to attempt a retry before giving up.
 
-Python Package Dependencies
+Dependencies
 ----------------
 
 -   [requests](https://pypi.python.org/pypi/requests/)
+-   [RESTPolling Block](https://github.com/nio-blocks/http_blocks/blob/master/rest/rest_block.py)
 
 Commands
 ----------------
