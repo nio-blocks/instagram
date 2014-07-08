@@ -74,6 +74,7 @@ class Instagram(RESTPolling):
                                               self.prev_min_tag_id)
         else:
             self.url = "%s&min_tag_id=%s" % (self.url, self.prev_min_tag_id)
+        self._logger.info("GETing url: {0}".format(self.url))
 
     def _process_response(self, resp):
         """ Extract fresh posts from the Instagram api response object.
@@ -97,7 +98,10 @@ class Instagram(RESTPolling):
         paging = self._check_paging(pagination)
 
         for post in posts:
+            self._logger.debug("Creating new Instagram signal: {0}".format(post))
             signals.append(InstagramSignal(post))
+        self._logger.info("Created {0} new Instagram signals.".format(
+            len(signals)))
 
         return signals, paging
 
@@ -128,8 +132,9 @@ class Instagram(RESTPolling):
             pagination = resp['pagination']
             self._update_min_tag_id(pagination)
         except Exception as e:
-            self._logger.warning("Failed to initialize min_tag_id for query: {0}"
-                                 .format(self.current_query))
+            self._logger.warning(
+                "Failed to initialize min_tag_id for query: {0}. url: {1}"
+                .format(self.current_query, url))
             self.min_tag_id = None
 
     def _update_min_tag_id(self, pagination):
