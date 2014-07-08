@@ -9,7 +9,6 @@ import requests
 
 class APICredentials(PropertyHolder):
     client_id = StringProperty(name="Client ID")
-    client_secret = StringProperty(name="Client Secret")
 
 
 class InstagramSignal(Signal):
