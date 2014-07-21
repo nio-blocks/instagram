@@ -8,7 +8,7 @@ import requests
 
 
 class APICredentials(PropertyHolder):
-    client_id = StringProperty(name="Client ID")
+    client_id = StringProperty(title="Client ID")
 
 
 class InstagramSignal(Signal):
@@ -31,7 +31,7 @@ class Instagram(RESTPolling):
     URL_FORMAT = ("https://api.instagram.com/v1/"
                   "tags/{0}/media/recent?client_id={1}&min_tag_id={2}")
 
-    creds = ObjectProperty(APICredentials)
+    creds = ObjectProperty(title='Credentials', APICredentials)
 
     def __init__(self):
         super().__init__()
