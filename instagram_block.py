@@ -24,8 +24,7 @@ class Instagram(RESTPolling):
     matching a configurable hashtag.
 
     Params:
-        creds (APICredentials): Initial window of desirable posts (for the
-            very first request.
+        creds (APICredentials): API credentials
 
     """
     URL_FORMAT = ("https://api.instagram.com/v1/"
@@ -103,6 +102,9 @@ class Instagram(RESTPolling):
             len(signals)))
 
         return signals, paging
+
+    def _get_post_id(self, post):
+        return getattr(post, 'id', None)
 
     def _initialize_all_min_tag_ids(self):
         with self._poll_lock:
