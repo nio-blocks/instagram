@@ -86,6 +86,9 @@ class InstagramSearchByUser(RESTPolling):
 
         return signals, paging
 
+    def _get_post_id(self, post):
+        return getattr(post, 'id', None)
+
     def _check_paging(self, pagination):
         if 'next_url' in pagination:
             self.url = pagination['next_url']
