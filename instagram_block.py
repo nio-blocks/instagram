@@ -14,6 +14,7 @@ class APICredentials(PropertyHolder):
 class InstagramSignal(Signal):
 
     def __init__(self, data):
+        super().__init__()
         for k in data:
             setattr(self, k, data[k])
 
@@ -139,7 +140,8 @@ class Instagram(RESTPolling):
             self.min_tag_id = None
 
     def _update_min_tag_id(self, pagination):
-        if 'min_tag_id' in pagination and pagination['min_tag_id'] > self.min_tag_id:
+        if 'min_tag_id' in pagination and pagination['min_tag_id'] > \
+                self.min_tag_id:
             self.min_tag_id = pagination['min_tag_id']
             self._logger.debug("Updating min_tag_id to {0} for query: {1}"
                                .format(self.min_tag_id, self.current_query))
