@@ -8,7 +8,8 @@ import requests
 
 
 class APICredentials(PropertyHolder):
-    client_id = StringProperty(title="Client ID")
+    client_id = StringProperty(title="Client ID",
+                               default="[[INSTAGRAM_CLIENT_ID]]")
 
 
 class InstagramSignal(Signal):

@@ -20,8 +20,10 @@ import uuid
 
 
 class APICredentials(PropertyHolder):
-    client_id = StringProperty(title="Client ID")
-    client_secret = StringProperty(title="Client Secret")
+    client_id = StringProperty(title="Client ID",
+                               default="[[INSTAGRAM_CLIENT_ID]]")
+    client_secret = StringProperty(title="Client Secret",
+                               default="[[INSTAGRAM_CLIENT_SECRET]]")
 
 
 class ServerInfo(PropertyHolder):

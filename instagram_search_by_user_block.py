@@ -30,7 +30,8 @@ class InstagramSearchByUser(RESTPolling):
     USER_URL_FORMAT = ("https://api.instagram.com/v1/"
                        "users/search?q={0}&client_id={1}")
 
-    client_id = StringProperty(name="Client ID")
+    client_id = StringProperty(name="Client ID",
+                               default="[[INSTAGRAM_CLIENT_ID]]")
     lookback = TimeDeltaProperty()
 
     def __init__(self):
