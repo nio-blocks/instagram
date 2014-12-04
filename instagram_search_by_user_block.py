@@ -90,6 +90,16 @@ class InstagramSearchByUser(RESTPolling):
     def _get_post_id(self, post):
         return getattr(post, 'id', None)
 
+    def _retry(self, resp, paging):
+        resp_error_type = resp.json().get('meta', {}).get('error_type')
+        if resp.status_code == 400 and resp_error_type == 'APINotAllowedError':
+            # this is a private user, skip to next query.
+            self._logger.debug("Skipping private user: {}".format(
+                self.current_query))
+            self._increment_idx()
+        else:
+            super()._retry(resp, paging)
+
     def _check_paging(self, pagination):
         if 'next_url' in pagination:
             self.url = pagination['next_url']
@@ -120,7 +130,7 @@ class InstagramSearchByUser(RESTPolling):
 
         users = resp.json().get('data', [])
         for user in users:
-            if user.get('username') == query:
+            if user.get('username').lower() == query.lower():
                 id = user.get('id', None)
                 self._logger.debug("Got id {0} for user {1}"
                                    .format(id, query))
