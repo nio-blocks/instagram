@@ -29,8 +29,11 @@ class Instagram(RESTPolling):
         creds (APICredentials): API credentials
 
     """
-    URL_FORMAT = ("https://api.instagram.com/v1/"
-                  "tags/{0}/media/recent?client_id={1}&min_tag_id={2}")
+
+    # Count max is currently 33 on Instagram
+    # Try to grab 50 in case they up the limit
+    URL_FORMAT = ("https://api.instagram.com/v1/tags"
+                  "/{0}/media/recent?count=50&client_id={1}&min_tag_id={2}")
 
     creds = ObjectProperty(APICredentials, title='Credentials')
 

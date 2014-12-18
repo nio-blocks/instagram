@@ -24,8 +24,11 @@ class InstagramSearchByUser(RESTPolling):
         lookback (timedelta): amount of time to lookback for posts on start.
 
     """
-    URL_FORMAT = ("https://api.instagram.com/v1/"
-                  "users/{0}/media/recent?client_id={1}&min_timestamp={2}")
+
+    # Count max is currently 33 on Instagram
+    # Try to grab 50 in case they up the limit
+    URL_FORMAT = ("https://api.instagram.com/v1/users"
+                  "/{0}/media/recent?count=50&client_id={1}&min_timestamp={2}")
 
     USER_URL_FORMAT = ("https://api.instagram.com/v1/"
                        "users/search?q={0}&client_id={1}")
