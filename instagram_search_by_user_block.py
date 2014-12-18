@@ -16,6 +16,7 @@ class InstagramSignal(Signal):
 
 @Discoverable(DiscoverableType.block)
 class InstagramSearchByUser(RESTPolling):
+
     """ This block polls the Instagram API, searching for all posts
     by the specified users.
 
@@ -46,7 +47,7 @@ class InstagramSearchByUser(RESTPolling):
         lb = self._unix_time(datetime.utcnow() - self.lookback)
         self._freshest = [lb] * self._n_queries
         # Convert queries from usernames to ids.
-        self.queries = [i for i in [self._convert_query_to_id(q) \
+        self.queries = [i for i in [self._convert_query_to_id(q)
                         for q in self.queries] if i]
         # reset n in case some usernames did not convert to ids.
         self._n_queries = len(self.queries) or 1
@@ -156,4 +157,3 @@ class InstagramSearchByUser(RESTPolling):
     def _parse_date(self, date):
         """ Overriden from base block."""
         return datetime.utcfromtimestamp(int(date))
-

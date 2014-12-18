@@ -22,6 +22,7 @@ class InstagramSignal(Signal):
 
 @Discoverable(DiscoverableType.block)
 class Instagram(RESTPolling):
+
     """ This block polls the Instagram API, searching for posts
     matching a configurable hashtag.
 
@@ -101,7 +102,8 @@ class Instagram(RESTPolling):
         paging = self._check_paging(pagination)
 
         for post in posts:
-            self._logger.debug("Creating new Instagram signal: {0}".format(post))
+            self._logger.debug(
+                "Creating new Instagram signal: {0}".format(post))
             signals.append(InstagramSignal(post))
         self._logger.info("Created {0} new Instagram signals.".format(
             len(signals)))
@@ -127,7 +129,7 @@ class Instagram(RESTPolling):
             resp = resp.json()
             self.min_tag_id = resp['pagination']['min_tag_id']
             self._logger.debug("Initialized min_tag_id to {0} for query: {1}"
-                       .format(self.min_tag_id, self.current_query))
+                               .format(self.min_tag_id, self.current_query))
             # And make a second request since the initial min_tag_id is
             # not always accurate the first time. Try it and see for yourself!
             url = self.URL_FORMAT.format(self.current_query,
@@ -137,7 +139,7 @@ class Instagram(RESTPolling):
             resp = resp.json()
             pagination = resp['pagination']
             self._update_min_tag_id(pagination)
-        except Exception as e:
+        except Exception:
             self._logger.warning(
                 "Failed to initialize min_tag_id for query: {0}. url: {1}"
                 .format(self.current_query, url))

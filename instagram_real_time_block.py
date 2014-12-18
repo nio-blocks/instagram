@@ -9,12 +9,11 @@ from nio.metadata.properties.timedelta import TimeDeltaProperty
 from nio.metadata.properties.list import ListProperty
 from nio.metadata.properties.int import IntProperty
 from nio.common.signal.base import Signal
-from nio.modules.web import WebEngine, RESTHandler
+from nio.modules.web import RESTHandler
 from nio.modules.scheduler import Job
 from nio.modules.threading import Lock, spawn
 import requests
 from urllib.request import quote
-import json
 from time import time
 import uuid
 
@@ -23,7 +22,7 @@ class APICredentials(PropertyHolder):
     client_id = StringProperty(title="Client ID",
                                default="[[INSTAGRAM_CLIENT_ID]]")
     client_secret = StringProperty(title="Client Secret",
-                               default="[[INSTAGRAM_CLIENT_SECRET]]")
+                                   default="[[INSTAGRAM_CLIENT_SECRET]]")
 
 
 class ServerInfo(PropertyHolder):
@@ -40,8 +39,9 @@ class InstagramSignal(Signal):
 
 
 class SubscriptionHandler(RESTHandler):
+
     def __init__(self, endpoint, poll, logger):
-        super().__init__('/'+endpoint)
+        super().__init__('/' + endpoint)
         self._schedule_poll = poll
         self._logger = logger
         self.counter = 0
@@ -67,6 +67,7 @@ class SubscriptionHandler(RESTHandler):
 @DependsOn("nio.modules.web", "1.0.0")
 @Discoverable(DiscoverableType.block)
 class InstagramRealTime(Block, WebServer):
+
     """ This block polls the Instagram real-time API, searching
     for posts matching a configurable hashtag.
 
@@ -194,7 +195,7 @@ class InstagramRealTime(Block, WebServer):
                 first_page = not paging
 
                 self._logger.debug("%s: %s" %
-                                ("Paging" if paging else "Polling", url))
+                                   ("Paging" if paging else "Polling", url))
 
                 try:
                     resp = requests.get(url, headers=headers)
@@ -204,16 +205,17 @@ class InstagramRealTime(Block, WebServer):
 
                 status = resp.status_code
                 self.etag = self.etag if paging \
-                            else resp.headers.get('ETag')
+                    else resp.headers.get('ETag')
                 self.modified = self.modified if paging \
-                                else resp.headers.get('Last-Modified')
+                    else resp.headers.get('Last-Modified')
 
                 if status != 200 and status != 304:
                     self._logger.error(
                         "Polling request returned status %d" % status
                     )
                 else:
-                    # process the Response object and initiate paging if necessary
+                    # process the Response object and initiate paging if
+                    # necessary
                     try:
                         signals, paging = self._process_response(resp)
                         signals = self._discard_duplicate_posts(
@@ -277,7 +279,6 @@ class InstagramRealTime(Block, WebServer):
         paging = self._check_paging(pagination)
 
         for post in posts:
-            #self._logger.debug("Creating new Instagram signal: {0}".format(post))
             signals.append(InstagramSignal(post))
         self._logger.info("Created {0} new Instagram signals.".format(
             len(signals)))
@@ -299,7 +300,7 @@ class InstagramRealTime(Block, WebServer):
         object = 'tag'
         aspect = 'media'
         object_id = self.current_query
-        callback_url= "http://{0}:{1}/{2}".format(
+        callback_url = "http://{0}:{1}/{2}".format(
             self.server_info.host,
             self.server_info.port,
             self.server_info.endpoint
@@ -351,7 +352,7 @@ class InstagramRealTime(Block, WebServer):
             subscription_id
         )
         requests.delete(url)
-        #self._subscription_id.pop(subscription_id, None)
+        # self._subscription_id.pop(subscription_id, None)
 
     def _initialize_all_min_tag_ids(self):
         for id in range(0, self._n_queries):
@@ -368,7 +369,7 @@ class InstagramRealTime(Block, WebServer):
             resp = resp.json()
             self.min_tag_id = resp['pagination']['min_tag_id']
             self._logger.debug("Initialized min_tag_id to {0} for query: {1}"
-                       .format(self.min_tag_id, self.current_query))
+                               .format(self.min_tag_id, self.current_query))
             # And make a second request since the initial min_tag_id is
             # not always accurate the first time. Try it and see for yourself!
             url = self.URL_FORMAT.format(self.current_query,
@@ -378,14 +379,15 @@ class InstagramRealTime(Block, WebServer):
             resp = resp.json()
             pagination = resp['pagination']
             self._update_min_tag_id(pagination)
-        except Exception as e:
+        except Exception:
             self._logger.warning(
                 "Failed to initialize min_tag_id for query: {0}. url: {1}"
                 .format(self.current_query, url))
             self.min_tag_id = None
 
     def _update_min_tag_id(self, pagination):
-        if 'min_tag_id' in pagination and pagination['min_tag_id'] > self.min_tag_id:
+        if ('min_tag_id' in pagination and
+                pagination['min_tag_id'] > self.min_tag_id):
             self.min_tag_id = pagination['min_tag_id']
             self._logger.debug("Updating min_tag_id to {0} for query: {1}"
                                .format(self.min_tag_id, self.current_query))
