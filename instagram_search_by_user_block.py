@@ -96,7 +96,9 @@ class InstagramSearchByUser(RESTPolling):
 
     def _retry(self, resp, paging):
         resp_error_type = resp.json().get('meta', {}).get('error_type')
-        if resp.status_code == 400 and resp_error_type == 'APINotAllowedError':
+        if resp.status_code == 400 and \
+           (resp_error_type == 'APINotAllowedError' or
+            resp_error_type == 'APINotFoundError'):
             # this is a private user, skip to next query.
             self._logger.debug("Skipping private user: {}".format(
                 self.current_query))
