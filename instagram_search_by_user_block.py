@@ -52,6 +52,10 @@ class InstagramSearchByUser(RESTPolling):
         # reset n in case some usernames did not convert to ids.
         self._n_queries = len(self.queries) or 1
 
+    def stop(self):
+        self.persistence.save()
+        super().stop()
+
     def _prepare_url(self, paging=False):
         # if paging then url is already set in _check_paging()
         if not paging:
@@ -120,7 +124,14 @@ class InstagramSearchByUser(RESTPolling):
         This block asks has a parameter for usernames so on start,
         requests to the instagram api need to be made to convert
         username to id.
+
         """
+        # If there is a cached id for this user, return it
+        # and skip the request
+        _id = self.persistence.load(query.lower())
+        if _id is not None:
+            return _id
+        
         user_url = self.USER_URL_FORMAT.format(
             query,
             self.client_id)
@@ -137,10 +148,11 @@ class InstagramSearchByUser(RESTPolling):
         users = resp.json().get('data', [])
         for user in users:
             if user.get('username').lower() == query.lower():
-                id = user.get('id', None)
+                _id = user.get('id', None)
                 self._logger.debug("Got id {0} for user {1}"
-                                   .format(id, query))
-                return id
+                                   .format(_id, query))
+                self.persistence.store(query.lower(), _id)
+                return _id
 
     def _make_request(self, url):
         try:
