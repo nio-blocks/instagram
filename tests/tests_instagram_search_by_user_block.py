@@ -1,4 +1,5 @@
 from ..instagram_search_by_user_block import InstagramSearchByUser
+from ..http_blocks.rest.rest_block import RESTPolling
 from unittest.mock import patch, Mock
 from nio.util.support.block_test_case import NIOBlockTestCase
 from requests import Response
@@ -6,10 +7,9 @@ from requests import Response
 
 class TestInstagramSearchByUser(NIOBlockTestCase):
 
-    @patch("instagram.http_blocks.rest.rest_block.RESTPolling._retry")
-    @patch("instagram.http_blocks.rest.rest_block.RESTPolling._authenticate")
-    @patch("instagram.instagram_search_by_user_block"
-           ".InstagramSearchByUser._convert_query_to_id")
+    @patch.object(RESTPolling, "_retry")
+    @patch.object(RESTPolling, "_authenticate")
+    @patch.object(InstagramSearchByUser, "_convert_query_to_id")
     def test_private_user(self, mock_id, mock_auth, mock_retry):
         blk = InstagramSearchByUser()
         self.configure_block(blk, {
@@ -35,10 +35,9 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
         # skip to next idx because we are not retrying.
         self.assertEqual(1, blk._idx)
 
-    @patch("instagram.http_blocks.rest.rest_block.RESTPolling._retry")
-    @patch("instagram.http_blocks.rest.rest_block.RESTPolling._authenticate")
-    @patch("instagram.instagram_search_by_user_block"
-           ".InstagramSearchByUser._convert_query_to_id")
+    @patch.object(RESTPolling, "_retry")
+    @patch.object(RESTPolling, "_authenticate")
+    @patch.object(InstagramSearchByUser, "_convert_query_to_id")
     def test_retry(self, mock_id, mock_auth, mock_retry):
         blk = InstagramSearchByUser()
         self.configure_block(blk, {
