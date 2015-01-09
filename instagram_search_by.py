@@ -30,10 +30,9 @@ class InstagramSearchByBase(RESTPolling):
         lb = self._unix_time(datetime.utcnow() - self.lookback)
         self._freshest = [lb] * self._n_queries
         # Convert queries from usernames to ids.
-        print('ORIG', self.queries)
-        self.queries = [i for i in [self._convert_query_to_id(q)
+        self.queries = [i for i in [self._process_query(q)
                         for q in self.queries] if i]
-        print('TRANSFORMED', self.queries)
+        print(self.queries)
         # reset n in case some usernames did not convert to ids.
         self._n_queries = len(self.queries) or 1
 
@@ -49,6 +48,7 @@ class InstagramSearchByBase(RESTPolling):
                 self.client_id,
                 self.freshest
             )
+            print(self.url)
 
     def _process_response(self, resp):
         """ Extract fresh posts from the Instagram api response object.
@@ -66,7 +66,8 @@ class InstagramSearchByBase(RESTPolling):
         signals = []
         resp = resp.json()
 
-        pagination = resp['pagination']
+        print(resp)
+        pagination = resp.get('pagination', [])
         paging = self._check_paging(pagination)
 
         fresh_posts = posts = resp.get('data', [])
@@ -102,7 +103,7 @@ class InstagramSearchByBase(RESTPolling):
         else:
             return False
 
-    def _convert_query_to_id(self, query):
+    def _process_query(self, query):
         """ Queries need to be converted from username to id.
 
         Instagram api queries by user need a user id as a parameter.
@@ -118,7 +119,6 @@ class InstagramSearchByBase(RESTPolling):
             return _id
         
         resource_url = self._construct_resource_url(query)
-        print('MY URL', resource_url)
         
         resp = self._make_request(resource_url)
         if resp is None:
