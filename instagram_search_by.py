@@ -32,7 +32,6 @@ class InstagramSearchByBase(RESTPolling):
         # Convert queries from usernames to ids.
         self.queries = [i for i in [self._process_query(q)
                         for q in self.queries] if i]
-        print(self.queries)
         # reset n in case some usernames did not convert to ids.
         self._n_queries = len(self.queries) or 1
 
@@ -48,7 +47,6 @@ class InstagramSearchByBase(RESTPolling):
                 self.client_id,
                 self.freshest
             )
-            print(self.url)
 
     def _process_response(self, resp):
         """ Extract fresh posts from the Instagram api response object.
@@ -66,7 +64,6 @@ class InstagramSearchByBase(RESTPolling):
         signals = []
         resp = resp.json()
 
-        print(resp)
         pagination = resp.get('pagination', [])
         paging = self._check_paging(pagination)
 

@@ -23,7 +23,6 @@ class InstagramSearchByUser(InstagramSearchByBase):
                            "users/search?q={0}&client_id={1}")
 
     def _extract_resource_id(self, users, query):
-        print(users)
         for user in users:
             if user.get('username').lower() == query.lower():
                 _id = user.get('id', None)
