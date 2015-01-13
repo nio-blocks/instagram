@@ -30,3 +30,23 @@ class InstagramSearchByUser(InstagramSearchByBase):
                                    .format(_id, query))
                 self.persistence.store(query.lower(), _id)
                 return _id
+
+    def _on_failure(self, resp, paging, url):
+        execute_retry = True
+        try:
+            status_code = resp.status_code
+            resp = resp.json()
+            err_type = resp.get('meta', {}).get('error_type')
+            if status_code == 400 and \
+               err_type in ['APINotAllowedError', 'APINotFoundError']:
+                self._logger.debug(
+                    "Skipping private user: {}".format(self.current_query))
+                execute_retry = False
+                self._increment_idx()
+        finally:
+            self._logger.error(
+                "Polling request of {} returned status {}: {}".format(
+                    url, status_code, resp)
+            )
+            if execute_retry:
+                self._retry(paging)
