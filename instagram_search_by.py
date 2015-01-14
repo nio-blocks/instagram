@@ -21,6 +21,8 @@ class InstagramSearchByBase(RESTPolling):
                                default="[[INSTAGRAM_CLIENT_ID]]")
     lookback = TimeDeltaProperty()
 
+    RESOURCE_URL_FORMAT = None
+
     def __init__(self):
         super().__init__()
         self._created_field = 'created_time'
@@ -33,7 +35,7 @@ class InstagramSearchByBase(RESTPolling):
         self.queries = [i for i in [self._process_query(q)
                         for q in self.queries] if i]
         # reset n in case some usernames did not convert to ids.
-        self._n_queries = len(self.queries) or 1
+        self._n_queries = len(self.queries)
 
     def stop(self):
         self.persistence.save()
@@ -130,10 +132,20 @@ class InstagramSearchByBase(RESTPolling):
         resources = resp.json().get('data', [])
         return self._extract_resource_id(resources, query)
 
+    def _extract_resource_id(self, resources, query):
+        """ This should be overridden in child blocks.
+
+        Defines the mechanism for extracting resource ids from
+        a (list of) resources.
+
+        """
+        return 
+
     def _construct_resource_url(self, query):
-        return self.RESOURCE_URL_FORMAT.format(
-            query,
-            self.client_id)
+        if self.RESOURCE_URL_FORMAT is not None:
+            return self.RESOURCE_URL_FORMAT.format(
+                query,
+                self.client_id)
 
     def _make_request(self, url):
         try:
