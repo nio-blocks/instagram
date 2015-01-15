@@ -13,7 +13,8 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
     @patch.object(RESTPolling, "_retry")
     @patch.object(RESTPolling, "_authenticate")
     @patch.object(InstagramSearchByUser, "_extract_resource_id")
-    def test_private_user(self, mock_id, mock_auth, mock_retry):
+    @patch("requests.get")
+    def test_private_user(self, mock_get, mock_id, mock_auth, mock_retry):
         blk = InstagramSearchByUser()
         self.configure_block(blk, {
             "queries": [
@@ -23,8 +24,9 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
         })
         blk.queries = ['1', '2']
         blk._n_queries = len(blk.queries)
-        resp = Mock()
+        resp = Response()
         resp.status_code = 400
+        resp.json = Mock()
         resp.json.return_value = \
             {
                 'meta': {
@@ -33,16 +35,18 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
                     'error_message': 'you cannot view this resource'
                 }
             }
+        mock_get.return_value = resp
         paging = False
         self.assertEqual(0, blk._idx)
-        blk._retry(resp, paging)
+        blk.poll(paging)
         # skip to next idx because we are not retrying.
         self.assertEqual(1, blk._idx)
 
     @patch.object(RESTPolling, "_retry")
     @patch.object(RESTPolling, "_authenticate")
     @patch.object(InstagramSearchByUser, "_extract_resource_id")
-    def test_retry(self, mock_id, mock_auth, mock_retry):
+    @patch("requests.get")
+    def test_retry(self, mock_get, mock_id, mock_auth, mock_retry):
         blk = InstagramSearchByUser()
         self.configure_block(blk, {
             "queries": [
@@ -52,10 +56,20 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
         })
         blk.queries = ['1', '2']
         blk._n_queries = len(blk.queries)
-        resp = Mock()
+        resp = Response()
         resp.status_code = 400
+        resp.json = Mock()
+        resp.json.return_value = \
+            {
+                'meta': {
+                    'error_type': 'WardrobeMalfunction',
+                    'code': 400,
+                    'error_message': "Your pants don't fit"
+                }
+            }
+        mock_get.return_value = resp
         paging = False
         self.assertEqual(0, blk._idx)
-        blk._retry(resp, paging)
+        blk.poll(paging)
         # don't skip to next idx because we are retrying.
         self.assertEqual(0, blk._idx)
