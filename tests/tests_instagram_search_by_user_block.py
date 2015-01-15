@@ -7,9 +7,12 @@ from requests import Response
 
 class TestInstagramSearchByUser(NIOBlockTestCase):
 
+    def get_test_modules(self):
+        return ['logging', 'threading', 'scheduler', 'security', 'persistence']
+
     @patch.object(RESTPolling, "_retry")
     @patch.object(RESTPolling, "_authenticate")
-    @patch.object(InstagramSearchByUser, "_convert_query_to_id")
+    @patch.object(InstagramSearchByUser, "_extract_resource_id")
     def test_private_user(self, mock_id, mock_auth, mock_retry):
         blk = InstagramSearchByUser()
         self.configure_block(blk, {
@@ -19,6 +22,7 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
             ]
         })
         blk.queries = ['1', '2']
+        blk._n_queries = len(blk.queries)
         resp = Mock()
         resp.status_code = 400
         resp.json.return_value = \
@@ -37,7 +41,7 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
 
     @patch.object(RESTPolling, "_retry")
     @patch.object(RESTPolling, "_authenticate")
-    @patch.object(InstagramSearchByUser, "_convert_query_to_id")
+    @patch.object(InstagramSearchByUser, "_extract_resource_id")
     def test_retry(self, mock_id, mock_auth, mock_retry):
         blk = InstagramSearchByUser()
         self.configure_block(blk, {
@@ -47,6 +51,7 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
             ]
         })
         blk.queries = ['1', '2']
+        blk._n_queries = len(blk.queries)
         resp = Mock()
         resp.status_code = 400
         paging = False
