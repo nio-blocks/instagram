@@ -1,8 +1,7 @@
 from .http_blocks.rest.rest_block import RESTPolling
 from nio.common.discovery import Discoverable, DiscoverableType
-from nio.metadata.properties.holder import PropertyHolder
-from nio.metadata.properties.string import StringProperty
-from nio.metadata.properties.object import ObjectProperty
+from nio.metadata.properties import PropertyHolder, StringProperty, \
+    ObjectProperty, BoolProperty
 from nio.common.signal.base import Signal
 import requests
 
@@ -37,6 +36,7 @@ class Instagram(RESTPolling):
                   "/{0}/media/recent?count=50&client_id={1}&min_tag_id={2}")
 
     creds = ObjectProperty(APICredentials, title='Credentials')
+    safe_mode = BoolProperty(title='Safe Mode', default=True)
 
     def __init__(self):
         super().__init__()
@@ -49,8 +49,8 @@ class Instagram(RESTPolling):
         self._prev_min_tag_id *= self._n_queries
 
     def start(self):
-        super().start()
         self._initialize_all_min_tag_ids()
+        super().start()
 
     def _prepare_url(self, paging=False):
         """ Overridden from RESTPolling block.
@@ -102,8 +102,6 @@ class Instagram(RESTPolling):
         paging = self._check_paging(pagination)
 
         for post in posts:
-            self._logger.debug(
-                "Creating new Instagram signal: {0}".format(post))
             signals.append(InstagramSignal(post))
         self._logger.info("Created {0} new Instagram signals.".format(
             len(signals)))
@@ -153,6 +151,14 @@ class Instagram(RESTPolling):
                                .format(self.min_tag_id, self.current_query))
 
     def _check_paging(self, pagination):
+        if self.safe_mode and \
+                self.page_num >= self.polling_interval.total_seconds():
+            # Don't let a single query page too many times if in safe mode.
+            self._logger.warning("Safe Mode: #{} is paging too many times:"
+                                 " {}".format(self.current_query,
+                                              self.page_num)
+                                 )
+            return False
         if 'next_url' in pagination:
             self.url = pagination['next_url']
             return True
