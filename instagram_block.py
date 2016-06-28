@@ -1,8 +1,8 @@
 from .http_blocks.rest.rest_block import RESTPolling
-from nio.common.discovery import Discoverable, DiscoverableType
-from nio.metadata.properties import PropertyHolder, StringProperty, \
+from nio.util.discovery import discoverable
+from nio.properties import PropertyHolder, StringProperty, \
     ObjectProperty, BoolProperty
-from nio.common.signal.base import Signal
+from nio.signal.base import Signal
 import requests
 
 
@@ -19,7 +19,7 @@ class InstagramSignal(Signal):
             setattr(self, k, data[k])
 
 
-@Discoverable(DiscoverableType.block)
+@discoverable
 class Instagram(RESTPolling):
 
     """ This block polls the Instagram API, searching for posts
@@ -78,7 +78,7 @@ class Instagram(RESTPolling):
                                               self.prev_min_tag_id)
         else:
             self.url = "%s&min_tag_id=%s" % (self.url, self.prev_min_tag_id)
-        self._logger.info("GETing url: {0}".format(self.url))
+        self.logger.info("GETing url: {0}".format(self.url))
 
     def _process_response(self, resp):
         """ Extract fresh posts from the Instagram api response object.
@@ -103,7 +103,7 @@ class Instagram(RESTPolling):
 
         for post in posts:
             signals.append(InstagramSignal(post))
-        self._logger.info("Created {0} new Instagram signals.".format(
+        self.logger.info("Created {0} new Instagram signals.".format(
             len(signals)))
 
         return signals, paging
@@ -126,7 +126,7 @@ class Instagram(RESTPolling):
             resp = requests.get(url)
             resp = resp.json()
             self.min_tag_id = resp['pagination']['min_tag_id']
-            self._logger.debug("Initialized min_tag_id to {0} for query: {1}"
+            self.logger.debug("Initialized min_tag_id to {0} for query: {1}"
                                .format(self.min_tag_id, self.current_query))
             # And make a second request since the initial min_tag_id is
             # not always accurate the first time. Try it and see for yourself!
@@ -138,7 +138,7 @@ class Instagram(RESTPolling):
             pagination = resp['pagination']
             self._update_min_tag_id(pagination)
         except Exception:
-            self._logger.warning(
+            self.logger.warning(
                 "Failed to initialize min_tag_id for query: {0}. url: {1}"
                 .format(self.current_query, url))
             self.min_tag_id = None
@@ -147,14 +147,14 @@ class Instagram(RESTPolling):
         if 'min_tag_id' in pagination and pagination['min_tag_id'] > \
                 self.min_tag_id:
             self.min_tag_id = pagination['min_tag_id']
-            self._logger.debug("Updating min_tag_id to {0} for query: {1}"
+            self.logger.debug("Updating min_tag_id to {0} for query: {1}"
                                .format(self.min_tag_id, self.current_query))
 
     def _check_paging(self, pagination):
         if self.safe_mode and \
                 self.page_num >= self.polling_interval.total_seconds():
             # Don't let a single query page too many times if in safe mode.
-            self._logger.warning("Safe Mode: #{} is paging too many times:"
+            self.logger.warning("Safe Mode: #{} is paging too many times:"
                                  " {}".format(self.current_query,
                                               self.page_num)
                                  )

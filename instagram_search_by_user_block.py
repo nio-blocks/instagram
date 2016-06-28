@@ -1,8 +1,8 @@
 from .instagram_search_by import InstagramSearchByBase
-from nio.common.discovery import Discoverable, DiscoverableType
+from nio.util.discovery import discoverable
 
 
-@Discoverable(DiscoverableType.block)
+@discoverable
 class InstagramSearchByUser(InstagramSearchByBase):
 
     """ This block polls the Instagram API, searching for all posts
@@ -26,7 +26,7 @@ class InstagramSearchByUser(InstagramSearchByBase):
         for user in users:
             if user.get('username').lower() == query.lower():
                 _id = user.get('id', None)
-                self._logger.debug("Got id {0} for user {1}"
+                self.logger.debug("Got id {0} for user {1}"
                                    .format(_id, query))
                 self.persistence.store(query.lower(), _id)
                 return _id
@@ -39,12 +39,12 @@ class InstagramSearchByUser(InstagramSearchByBase):
             err_type = resp.get('meta', {}).get('error_type')
             if status_code == 400 and \
                err_type in ['APINotAllowedError', 'APINotFoundError']:
-                self._logger.debug(
+                self.logger.debug(
                     "Skipping private user: {}".format(self.current_query))
                 execute_retry = False
                 self._increment_idx()
         finally:
-            self._logger.error(
+            self.logger.error(
                 "Polling request of {} returned status {}: {}".format(
                     url, status_code, resp)
             )

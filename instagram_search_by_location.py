@@ -1,9 +1,9 @@
 from .instagram_search_by import InstagramSearchByBase
-from nio.common.discovery import Discoverable, DiscoverableType
+from nio.util.discovery import discoverable
 import re
 
 
-@Discoverable(DiscoverableType.block)
+@discoverable
 class InstagramSearchByLocation(InstagramSearchByBase):
 
     """ This block polls the Instagram API, searching for all posts
@@ -46,7 +46,7 @@ class InstagramSearchByLocation(InstagramSearchByBase):
     def _extract_resource_id(self, locations, query):
         if locations:
             _id = locations[0].get('id', None)
-            self._logger.debug("Got id {0} for resource {1}"
+            self.logger.debug("Got id {0} for resource {1}"
                                .format(_id, query))
             self.persistence.store(query.lower(), _id)
             return _id

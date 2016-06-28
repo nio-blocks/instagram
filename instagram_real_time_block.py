@@ -1,17 +1,17 @@
-from .mixins.web_server.web_server_block import WebServer
-from nio.common.block.base import Block
-from nio.common.discovery import Discoverable, DiscoverableType
+from nio.block.mixins.web_server.web_server_block import WebServer
+from nio.block.base import Block
+from nio.util.discovery import discoverable
 from nio.common.versioning.dependency import DependsOn
-from nio.metadata.properties.holder import PropertyHolder
-from nio.metadata.properties.string import StringProperty
-from nio.metadata.properties.object import ObjectProperty
-from nio.metadata.properties.timedelta import TimeDeltaProperty
-from nio.metadata.properties.list import ListProperty
-from nio.metadata.properties.int import IntProperty
-from nio.common.signal.base import Signal
+from nio.properties.holder import PropertyHolder
+from nio.properties.string import StringProperty
+from nio.properties.object import ObjectProperty
+from nio.properties.timedelta import TimeDeltaProperty
+from nio.properties.list import ListProperty
+from nio.properties.int import IntProperty
+from nio.signal.base import Signal
 from nio.modules.web import RESTHandler
 from nio.modules.scheduler import Job
-from nio.modules.threading import Lock, spawn
+from threading import Lock, spawn
 import requests
 from urllib.request import quote
 from time import time
@@ -43,12 +43,12 @@ class SubscriptionHandler(RESTHandler):
     def __init__(self, endpoint, poll, logger):
         super().__init__('/' + endpoint)
         self._schedule_poll = poll
-        self._logger = logger
+        self.logger = logger
         self.counter = 0
 
     def on_post(self, req, rsp):
         t = time()
-        self._logger.debug("Subscription handling POST: {} {}".format(req, t))
+        self.logger.debug("Subscription handling POST: {} {}".format(req, t))
         body = req.get_body()
         for subscription in body:
             self.counter += 1
@@ -57,7 +57,7 @@ class SubscriptionHandler(RESTHandler):
                 spawn(self._schedule_poll, int(subscription_id))
 
     def on_get(self, req, rsp):
-        self._logger.debug(
+        self.logger.debug(
             "Subscription handling GET: {}"
             .format(req.get_params().get('hub.challenge'))
         )
@@ -65,7 +65,7 @@ class SubscriptionHandler(RESTHandler):
 
 
 @DependsOn("nio.modules.web", "1.0.0")
-@Discoverable(DiscoverableType.block)
+@discoverable
 class InstagramRealTime(Block, WebServer):
 
     """ This block polls the Instagram real-time API, searching
@@ -114,7 +114,7 @@ class InstagramRealTime(Block, WebServer):
         self.configure_server(conf,
                               SubscriptionHandler(self.server_info.endpoint,
                                                   self._schedule_poll,
-                                                  self._logger),
+                                                  self.logger),
                               )
 
     def start(self):
@@ -137,14 +137,14 @@ class InstagramRealTime(Block, WebServer):
 
     def _schedule_poll(self, subscription_id):
         # If a poll is not already scheduled, run poll and schedule one.
-        self._logger.debug('SCHED {}'.format(subscription_id))
+        self.logger.debug('SCHED {}'.format(subscription_id))
         id = uuid.uuid1()
-        self._logger.debug('{}'.format(id))
+        self.logger.debug('{}'.format(id))
         with self._schedule_poll_lock:
-            self._logger.debug('{}'.format(id))
+            self.logger.debug('{}'.format(id))
             idx = self._subscription_id.get(subscription_id)
             if not self._poll_job[idx]:
-                self._logger.debug(
+                self.logger.debug(
                     "Scheduling poll job for {}"
                     .format(subscription_id)
                 )
@@ -156,7 +156,7 @@ class InstagramRealTime(Block, WebServer):
                     subscription_id=subscription_id
                 )
             else:
-                self._logger.debug(
+                self.logger.debug(
                     "Discarding poll job for {}"
                     .format(subscription_id)
                 )
@@ -166,14 +166,14 @@ class InstagramRealTime(Block, WebServer):
         with self._schedule_poll_lock:
             idx = self._subscription_id.get(subscription_id)
             self._poll_job[idx] = None
-            self._logger.debug(
+            self.logger.debug(
                 "Running scheduled poll job for {}"
                 .format(subscription_id)
             )
         self.poll(subscription_id)
 
     def poll(self, subscription_id):
-        self._logger.debug(
+        self.logger.debug(
             "Polling for {}"
             .format(subscription_id)
         )
@@ -194,13 +194,13 @@ class InstagramRealTime(Block, WebServer):
                 url = self.url
                 first_page = not paging
 
-                self._logger.debug("%s: %s" %
+                self.logger.debug("%s: %s" %
                                    ("Paging" if paging else "Polling", url))
 
                 try:
                     resp = requests.get(url, headers=headers)
                 except Exception as e:
-                    self._logger.error("GET request failed, details: %s" % e)
+                    self.logger.error("GET request failed, details: %s" % e)
                     return
 
                 status = resp.status_code
@@ -210,7 +210,7 @@ class InstagramRealTime(Block, WebServer):
                     else resp.headers.get('Last-Modified')
 
                 if status != 200 and status != 304:
-                    self._logger.error(
+                    self.logger.error(
                         "Polling request returned status %d" % status
                     )
                 else:
@@ -225,7 +225,7 @@ class InstagramRealTime(Block, WebServer):
                             self.notify_signals(signals)
                         polling = paging
                     except Exception as e:
-                        self._logger.error(
+                        self.logger.error(
                             "Error while processing polling response: %s" % e
                         )
 
@@ -255,7 +255,7 @@ class InstagramRealTime(Block, WebServer):
                                               self.prev_min_tag_id)
         else:
             self.url = "%s&min_tag_id=%s" % (self.url, self.prev_min_tag_id)
-        self._logger.info("GETing url: {0}".format(self.url))
+        self.logger.info("GETing url: {0}".format(self.url))
 
     def _process_response(self, resp):
         """ Extract fresh posts from the Instagram api response object.
@@ -280,7 +280,7 @@ class InstagramRealTime(Block, WebServer):
 
         for post in posts:
             signals.append(InstagramSignal(post))
-        self._logger.info("Created {0} new Instagram signals.".format(
+        self.logger.info("Created {0} new Instagram signals.".format(
             len(signals)))
 
         return signals, paging
@@ -314,7 +314,7 @@ class InstagramRealTime(Block, WebServer):
                    'object_id': object_id,
                    'callback_url': callback_url}
         try:
-            self._logger.debug(
+            self.logger.debug(
                 "Creating subscription for {}".format(object_id)
             )
             resp = requests.post(url, data=payload)
@@ -322,18 +322,18 @@ class InstagramRealTime(Block, WebServer):
             subscription_id = resp.get('data', {}).get('id')
             if subscription_id:
                 self._subscription_id[int(subscription_id)] = self._idx
-                self._logger.debug(
+                self.logger.debug(
                     "Subscription created for {}: {}".format(
                         self.current_query,
                         subscription_id
                     )
                 )
             else:
-                self._logger.debug(
+                self.logger.debug(
                     "Bad subscription response: {}".format(resp)
                 )
         except Exception as e:
-            self._logger.error(
+            self.logger.error(
                 "Error creating subscription: {}".format(e)
             )
 
@@ -342,7 +342,7 @@ class InstagramRealTime(Block, WebServer):
             self._delete_subscription(subscription_id)
 
     def _delete_subscription(self, subscription_id):
-        self._logger.debug(
+        self.logger.debug(
             "Deleting subscription: {}".format(subscription_id)
         )
         url = "https://api.instagram.com/v1/subscriptions?"
@@ -368,7 +368,7 @@ class InstagramRealTime(Block, WebServer):
             resp = requests.get(url)
             resp = resp.json()
             self.min_tag_id = resp['pagination']['min_tag_id']
-            self._logger.debug("Initialized min_tag_id to {0} for query: {1}"
+            self.logger.debug("Initialized min_tag_id to {0} for query: {1}"
                                .format(self.min_tag_id, self.current_query))
             # And make a second request since the initial min_tag_id is
             # not always accurate the first time. Try it and see for yourself!
@@ -380,7 +380,7 @@ class InstagramRealTime(Block, WebServer):
             pagination = resp['pagination']
             self._update_min_tag_id(pagination)
         except Exception:
-            self._logger.warning(
+            self.logger.warning(
                 "Failed to initialize min_tag_id for query: {0}. url: {1}"
                 .format(self.current_query, url))
             self.min_tag_id = None
@@ -389,7 +389,7 @@ class InstagramRealTime(Block, WebServer):
         if ('min_tag_id' in pagination and
                 pagination['min_tag_id'] > self.min_tag_id):
             self.min_tag_id = pagination['min_tag_id']
-            self._logger.debug("Updating min_tag_id to {0} for query: {1}"
+            self.logger.debug("Updating min_tag_id to {0} for query: {1}"
                                .format(self.min_tag_id, self.current_query))
 
     def _check_paging(self, pagination):

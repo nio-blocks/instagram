@@ -1,7 +1,7 @@
 from .http_blocks.rest.rest_block import RESTPolling
-from nio.metadata.properties.string import StringProperty
-from nio.metadata.properties.timedelta import TimeDeltaProperty
-from nio.common.signal.base import Signal
+from nio.properties.string import StringProperty
+from nio.properties.timedelta import TimeDeltaProperty
+from nio.signal.base import Signal
 from datetime import datetime
 import requests
 
@@ -75,7 +75,7 @@ class InstagramSearchByBase(RESTPolling):
             fresh_posts = self.find_fresh_posts(posts)
 
         signals = [Signal(p) for p in fresh_posts]
-        self._logger.info("Created {0} new Instagram signals.".format(
+        self.logger.info("Created {0} new Instagram signals.".format(
             len(signals)))
 
         return signals, paging
@@ -110,7 +110,7 @@ class InstagramSearchByBase(RESTPolling):
         resp = self._make_request(resource_url)
         if resp is None:
             # try again if the response was bad.
-            self._logger.debug("Attempting immediate retry to get id"
+            self.logger.debug("Attempting immediate retry to get id"
                                " for: {0}".format(query))
             resp = self._make_request(resource_url)
             if resp is None:
@@ -139,11 +139,11 @@ class InstagramSearchByBase(RESTPolling):
         try:
             resp = requests.get(url)
         except Exception as e:
-            self._logger.error("GET request failed: {0}".format(e))
+            self.logger.error("GET request failed: {0}".format(e))
             return
         status = resp.status_code
         if status != 200 and status != 304:
-            self._logger.error(
+            self.logger.error(
                 "Instagram request returned status %d" % status
             )
             return
