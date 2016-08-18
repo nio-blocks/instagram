@@ -1,9 +1,9 @@
 from .instagram_search_by import InstagramSearchByBase
-from nio.common.discovery import Discoverable, DiscoverableType
-from nio.metadata.properties.list import ListProperty
-from nio.metadata.properties.int import IntProperty
-from nio.metadata.properties.float import FloatProperty
-from nio.metadata.properties.holder import PropertyHolder
+from nio.util.discovery import discoverable
+from nio.properties.list import ListProperty
+from nio.properties.int import IntProperty
+from nio.properties.float import FloatProperty
+from nio.properties.holder import PropertyHolder
 
 
 class LocationRadius(PropertyHolder):
@@ -12,7 +12,7 @@ class LocationRadius(PropertyHolder):
     longitude = FloatProperty(title='Longitude', default=0.0)
 
 
-@Discoverable(DiscoverableType.block)
+@discoverable
 class InstagramSearchByRadius(InstagramSearchByBase):
 
     """ This block polls the Instagram API, searching for all posts
@@ -40,7 +40,7 @@ class InstagramSearchByRadius(InstagramSearchByBase):
 
         """
         params = "lat={0}&lng={1}&distance={2}"
-        return params.format(query.latitude, query.longitude, query.radius)
+        return params.format(query.latitude(), query.longitude(), query.radius())
 
     @property
     def current_query(self):
