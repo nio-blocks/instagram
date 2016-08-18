@@ -40,14 +40,31 @@ Output
 ---------
 Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/). The following is a list of commonly include attributes, but note that not all will be included on every signal:
 
--   `id`
--   user[`username`]
--   caption[`text`]
--   `link`
--   images[`standard_resolution`][`url`]
--   user[`profile_picture`]
--   `type`
--   `created_time`
+```
+{
+  id: string,
+  user: {
+    username: string
+  },
+  caption: {
+    text: string
+  },
+  link: string,
+  images: {
+    standard_resolution: {
+      url: string,
+      width: int,
+      height: int
+    }
+  },
+  user: {
+    profile_picture: string,
+    id: string
+  },
+  type: string,
+  created_time: string
+}
+```
 
 ***
 
@@ -84,11 +101,28 @@ Output
 ---------
 Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/). The following is a list of commonly include attributes, but note that not all will be included on every signal:
 
--   `id`
--   user[`username`]
--   caption[`text`]
--   `link`
--   images[`standard_resolution`][`url`]
--   user[`profile_picture`]
--   `type`
--   `created_time`
+```
+{
+  id: string,
+  user: {
+    username: string
+  },
+  caption: {
+    text: string
+  },
+  link: string,
+  images: {
+    standard_resolution: {
+      url: string,
+      width: int,
+      height: int
+    }
+  },
+  user: {
+    profile_picture: string,
+    id: string
+  },
+  type: string,
+  created_time: string
+}
+```
