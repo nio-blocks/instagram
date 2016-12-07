@@ -1,8 +1,8 @@
 from ..instagram_block import Instagram
 from ..http_blocks.rest.rest_block import RESTPolling
 from unittest.mock import patch, Mock
-from nio.util.support.block_test_case import NIOBlockTestCase
-from nio.modules.threading import Event
+from nio.testing.block_test_case import NIOBlockTestCase
+from threading import Event
 
 
 class InstagramEpilogueEvent(Instagram):
@@ -17,9 +17,6 @@ class InstagramEpilogueEvent(Instagram):
 
 
 class TestInstagram(NIOBlockTestCase):
-
-    def get_test_modules(self):
-        return ['logging', 'threading', 'scheduler', 'security', 'persistence']
 
     @patch.object(RESTPolling, "_retry")
     @patch.object(RESTPolling, "_authenticate")
@@ -42,4 +39,4 @@ class TestInstagram(NIOBlockTestCase):
             }
         blk.poll()
         e.wait(2)
-        self.assertEqual(blk.page_num, blk.polling_interval.total_seconds())
+        self.assertEqual(blk.page_num, blk.polling_interval().total_seconds())

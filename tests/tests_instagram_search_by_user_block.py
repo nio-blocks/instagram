@@ -1,15 +1,11 @@
 from ..instagram_search_by_user_block import InstagramSearchByUser
 from ..http_blocks.rest.rest_block import RESTPolling
 from unittest.mock import patch, Mock
-from nio.util.support.block_test_case import NIOBlockTestCase
+from nio.testing.block_test_case import NIOBlockTestCase
 from requests import Response
 
 
 class TestInstagramSearchByUser(NIOBlockTestCase):
-
-    def get_test_modules(self):
-        return ['logging', 'threading', 'scheduler', 'security', 'persistence']
-
     @patch.object(RESTPolling, "_retry")
     @patch.object(RESTPolling, "_authenticate")
     @patch.object(InstagramSearchByUser, "_extract_resource_id")
@@ -23,7 +19,7 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
             ]
         })
         blk.queries = ['1', '2']
-        blk._n_queries = len(blk.queries)
+        blk._n_queries = len(blk.queries())
         resp = Response()
         resp.status_code = 400
         resp.json = Mock()
@@ -55,7 +51,7 @@ class TestInstagramSearchByUser(NIOBlockTestCase):
             ]
         })
         blk.queries = ['1', '2']
-        blk._n_queries = len(blk.queries)
+        blk._n_queries = len(blk.queries())
         resp = Response()
         resp.status_code = 400
         resp.json = Mock()

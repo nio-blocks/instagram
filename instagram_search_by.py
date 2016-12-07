@@ -1,7 +1,8 @@
 from .http_blocks.rest.rest_block import RESTPolling
-from nio.metadata.properties.string import StringProperty
-from nio.metadata.properties.timedelta import TimeDeltaProperty
-from nio.common.signal.base import Signal
+from nio.properties.string import StringProperty
+from nio.properties.timedelta import TimeDeltaProperty
+from nio.signal.base import Signal
+from nio.block.mixins.persistence.persistence import Persistence
 from datetime import datetime
 import requests
 
@@ -17,9 +18,9 @@ class InstagramSearchByBase(RESTPolling):
 
     """
 
-    client_id = StringProperty(name="Client ID",
+    client_id = StringProperty(title="Client ID",
                                default="[[INSTAGRAM_CLIENT_ID]]")
-    lookback = TimeDeltaProperty()
+    lookback = TimeDeltaProperty(default={"seconds":300}, title="Lookback Period")
 
     RESOURCE_URL_FORMAT = None
 
@@ -29,24 +30,28 @@ class InstagramSearchByBase(RESTPolling):
 
     def configure(self, context):
         super().configure(context)
-        lb = self._unix_time(datetime.utcnow() - self.lookback)
+        lb = self._unix_time(datetime.utcnow() - self.lookback())
         self._freshest = [lb] * self._n_queries
         # Convert queries from usernames to ids.
         self.queries = [i for i in [self._process_query(q)
-                        for q in self.queries] if i]
+                        for q in self.queries()] if i]
         # reset n in case some usernames did not convert to ids.
-        self._n_queries = len(self.queries)
+        self._n_queries = len(self.queries())
 
     def stop(self):
-        self.persistence.save()
+        # self.persistence.save()
         super().stop()
+
+    def persisted_values(self):
+        """Persist states using block mixin."""
+        return [query.lower()]
 
     def _prepare_url(self, paging=False):
         # if paging then url is already set in _check_paging()
         if not paging:
             self.url = self.URL_FORMAT.format(
                 self.current_query,
-                self.client_id,
+                self.client_id(),
                 self.freshest
             )
 
@@ -75,7 +80,7 @@ class InstagramSearchByBase(RESTPolling):
             fresh_posts = self.find_fresh_posts(posts)
 
         signals = [Signal(p) for p in fresh_posts]
-        self._logger.info("Created {0} new Instagram signals.".format(
+        self.logger.info("Created {0} new Instagram signals.".format(
             len(signals)))
 
         return signals, paging
@@ -101,16 +106,16 @@ class InstagramSearchByBase(RESTPolling):
         """
         # If there is a cached id for this user, return it
         # and skip the request
-        _id = self.persistence.load(query.lower())
+        _id = query.lower()
         if _id is not None:
             return _id
-        
+
         resource_url = self._construct_resource_url(query)
-        
+
         resp = self._make_request(resource_url)
         if resp is None:
             # try again if the response was bad.
-            self._logger.debug("Attempting immediate retry to get id"
+            self.logger.debug("Attempting immediate retry to get id"
                                " for: {0}".format(query))
             resp = self._make_request(resource_url)
             if resp is None:
@@ -127,7 +132,7 @@ class InstagramSearchByBase(RESTPolling):
         a (list of) resources.
 
         """
-        return 
+        return
 
     def _construct_resource_url(self, query):
         if self.RESOURCE_URL_FORMAT is not None:
@@ -139,11 +144,11 @@ class InstagramSearchByBase(RESTPolling):
         try:
             resp = requests.get(url)
         except Exception as e:
-            self._logger.error("GET request failed: {0}".format(e))
+            self.logger.error("GET request failed: {0}".format(e))
             return
         status = resp.status_code
         if status != 200 and status != 304:
-            self._logger.error(
+            self.logger.error(
                 "Instagram request returned status %d" % status
             )
             return
