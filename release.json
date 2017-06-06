@@ -1,0 +1,12 @@
+{
+  "nio/Instagram": {
+    "Language": "Python",
+    "Version": "1.0.0",
+    "Reference": "github.com/nio-blocks/instagram.git@v1.0.0"
+  },
+  "nio/InstagramSearchByUser": {
+    "Language": "Python",
+    "Version": "1.0.0",
+    "Reference": "github.com/nio-blocks/instagram.git@v1.0.0"
+  }
+}
