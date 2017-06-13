@@ -1,63 +1,63 @@
 {
-  "nio/Instagram": {
-    "Version": "1.0.0",
-    "Commands": {},
-    "Category": "WebService",
-    "Properties": {
-      "creds": {
-        "description": "API credentials."
-      },
-      "queries": {
-        "description": "List of hashtags to search public posts for."
-      },
-      "polling_interval": {
-        "description": "How often API is polled. When using more than one query. Each query will be polled at a period equal to the `polling_interval` times the number of `queries`."
-      },
-      "retry_interval": {
-        "description": "When a url request fails, how long to wait before attempting to try again."
-      },
-      "retry_limit": {
-        "description": "When a url request fails, number of times to attempt a retry before giving up."
-      }
+    "nio/Instagram": {
+        "Input": {
+            "Description": "None"
+        },
+        "Output": {
+            "Description": "Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/). The following is a list of commonly include attributes, but note that not all will be included on every signal:\n```\n{\nid: string,\nuser: {\nusername: string\n},\ncaption: {\ntext: string\n},\nlink: string,\nimages: {\nstandard_resolution: {\nurl: string,\nwidth: int,\nheight: int\n}\n},\nuser: {\nprofile_picture: string,\nid: string\n},\ntype: string,\ncreated_time: string\n}\n```"
+        },
+        "Commands": {},
+        "Version": "1.0.0",
+        "Description": "Polls Instagram for public posts, given a hashtag. The hashtag can be in either the caption or comments. Official documentation of [Instagram API hashtags](http://instagram.com/developer/endpoints/tags/).",
+        "Properties": {
+            "creds": {
+                "description": "API credentials."
+            },
+            "retry_interval": {
+                "description": "When a url request fails, how long to wait before attempting to try again."
+            },
+            "polling_interval": {
+                "description": "How often API is polled. When using more than one query. Each query will be polled at a period equal to the `polling_interval` times the number of `queries`."
+            },
+            "retry_limit": {
+                "description": "When a url request fails, number of times to attempt a retry before giving up."
+            },
+            "queries": {
+                "description": "List of hashtags to search public posts for."
+            }
+        },
+        "Category": "WebService"
     },
-    "Output": "Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/). The following is a list of commonly include attributes, but note that not all will be included on every signal:\n```\n{\nid: string,\nuser: {\nusername: string\n},\ncaption: {\ntext: string\n},\nlink: string,\nimages: {\nstandard_resolution: {\nurl: string,\nwidth: int,\nheight: int\n}\n},\nuser: {\nprofile_picture: string,\nid: string\n},\ntype: string,\ncreated_time: string\n}\n```",
-    "Description": "Polls Instagram for public posts, given a hashtag. The hashtag can be in either the caption or comments. Official documentation of [Instagram API hashtags](http://instagram.com/developer/endpoints/tags/).",
-    "Input": "None",
-    "Dependencies": [
-      "-   [requests](https://pypi.python.org/pypi/requests/)",
-      "-   [RESTPolling Block](https://github.com/nio-blocks/http_blocks/blob/master/rest/rest_block.py)"
-    ]
-  },
-  "nio/InstagramSearchByUser": {
-    "Version": "1.0.0",
-    "Commands": {},
-    "Category": "WebService",
-    "Properties": {
-      "lookback": {
-        "description": "On start, lookback this amount of time and grab old posts."
-      },
-      "queries": {
-        "description": "List of users to search public posts for."
-      },
-      "client_id": {
-        "description": "API credentials."
-      },
-      "retry_interval": {
-        "description": "When a url request fails, how long to wait before attempting to try again."
-      },
-      "polling_interval": {
-        "description": "How often API is polled. When using more than one query. Each query will be polled at a period equal to the `polling_interval` times the number of `queries`."
-      },
-      "retry_limit": {
-        "description": "When a url request fails, number of times to attempt a retry before giving up."
-      }
-    },
-    "Output": "Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/). The following is a list of commonly include attributes, but note that not all will be included on every signal:\n```\n{\nid: string,\nuser: {\nusername: string\n},\ncaption: {\ntext: string\n},\nlink: string,\nimages: {\nstandard_resolution: {\nurl: string,\nwidth: int,\nheight: int\n}\n},\nuser: {\nprofile_picture: string,\nid: string\n},\ntype: string,\ncreated_time: string\n}\n```",
-    "Description": "Polls Instagram for public posts by a specified user. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
-    "Input": "None",
-    "Dependencies": [
-      "-   [requests](https://pypi.python.org/pypi/requests/)",
-      "-   [RESTPolling Block](https://github.com/nio-blocks/http_blocks/blob/master/rest/rest_block.py)"
-    ]
-  }
+    "nio/InstagramSearchByUser": {
+        "Input": {
+            "Description": "None"
+        },
+        "Output": {
+            "Description": "Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/). The following is a list of commonly include attributes, but note that not all will be included on every signal:\n```\n{\nid: string,\nuser: {\nusername: string\n},\ncaption: {\ntext: string\n},\nlink: string,\nimages: {\nstandard_resolution: {\nurl: string,\nwidth: int,\nheight: int\n}\n},\nuser: {\nprofile_picture: string,\nid: string\n},\ntype: string,\ncreated_time: string\n}\n```"
+        },
+        "Commands": {},
+        "Version": "1.0.0",
+        "Description": "Polls Instagram for public posts by a specified user. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
+        "Properties": {
+            "client_id": {
+                "description": "API credentials."
+            },
+            "retry_interval": {
+                "description": "When a url request fails, how long to wait before attempting to try again."
+            },
+            "queries": {
+                "description": "List of users to search public posts for."
+            },
+            "lookback": {
+                "description": "On start, lookback this amount of time and grab old posts."
+            },
+            "polling_interval": {
+                "description": "How often API is polled. When using more than one query. Each query will be polled at a period equal to the `polling_interval` times the number of `queries`."
+            },
+            "retry_limit": {
+                "description": "When a url request fails, number of times to attempt a retry before giving up."
+            }
+        },
+        "Category": "WebService"
+    }
 }
