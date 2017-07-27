@@ -8,5 +8,15 @@
     "Language": "Python",
     "Version": "1.0.0",
     "Reference": "github.com/nio-blocks/instagram.git@v1.0.0"
+  },
+  "nio/InstagramSearchByLocation": {
+    "Language": "Python",
+    "Version": "1.0.0",
+    "Reference": "github.com/nio-blocks/instagram.git@v1.0.0"
+  },
+  "nio/InstagramSearchByRadius": {
+    "Language": "Python",
+    "Version": "1.0.0",
+    "Reference": "github.com/nio-blocks/instagram.git@v1.0.0"
   }
 }

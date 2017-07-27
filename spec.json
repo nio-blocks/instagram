@@ -59,5 +59,11 @@
             }
         },
         "Category": "WebService"
+    },
+    "nio/InstagramSearchByLocation": {
+      "Description": "Polls Instagram for public post by a location"
+    },
+    "nio/InstagramSearchByRadius": {
+      "Description": "Polls Instagram for public post by a radius"
     }
 }
