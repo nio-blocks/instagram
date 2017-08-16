@@ -2,21 +2,21 @@
   "nio/Instagram": {
     "language": "Python",
     "version": "0.0.1",
-    "reference": "github.com/nio-blocks/instagram.git@v0.0.1"
+    "url": "git://github.com/nio-blocks/instagram.git"
   },
   "nio/InstagramSearchByLocation": {
     "language": "Python",
     "version": "0.0.1",
-    "reference": "github.com/nio-blocks/instagram.git@v0.0.1"
+    "url": "git://github.com/nio-blocks/instagram.git"
   },
   "nio/InstagramSearchByRadius": {
     "language": "Python",
     "version": "0.0.1",
-    "reference": "github.com/nio-blocks/instagram.git@v0.0.1"
+    "url": "git://github.com/nio-blocks/instagram.git"
   },
   "nio/InstagramSearchByUser": {
     "language": "Python",
     "version": "0.0.1",
-    "reference": "github.com/nio-blocks/instagram.git@v0.0.1"
+    "url": "git://github.com/nio-blocks/instagram.git"
   }
 }
