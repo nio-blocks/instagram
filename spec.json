@@ -1,34 +1,262 @@
 {
   "nio/Instagram": {
     "version": "0.0.1",
-    "description": "",
-    "inputs": {},
-    "outputs": {},
-    "properties": {},
+    "description": "Polls Instagram for public posts, given a hashtag. The hashtag can be in either the caption or comments. Official documentation of [Instagram API hashtags](http://instagram.com/developer/endpoints/tags/).",
+    "properties": {
+      "creds": {
+        "title": "Credentials",
+        "type": "ObjectType",
+        "description": "API credentials.",
+        "default": {
+          "client_id": "[[INSTAGRAM_CLIENT_ID]]"
+        }
+      },
+      "include_query": {
+        "title": "Include Query Field",
+        "type": "StringType",
+        "description": "Whether to include queries in request to Instagram.",
+        "default": null
+      },
+      "polling_interval": {
+        "title": "Polling Interval",
+        "type": "TimeDeltaType",
+        "description": "How often Instagram is polled. When using more than one query. Each query will be polled at a period equal to the *polling interval* times the number of queries.",
+        "default": {
+          "seconds": 20
+        }
+      },
+      "queries": {
+        "title": "Query Strings",
+        "type": "ListType",
+        "description": "List of hashtags to search public posts for.",
+        "default": []
+      },
+      "retry_interval": {
+        "title": "Retry Interval",
+        "type": "TimeDeltaType",
+        "description": "When a url request fails, how long to wait before attempting to try again.",
+        "default": {
+          "seconds": 60
+        }
+      },
+      "retry_limit": {
+        "title": "Retry Limit",
+        "type": "IntType",
+        "description": "Number of times to retry on a poll.",
+        "default": 3
+      },
+      "safe_mode": {
+        "title": "Safe Mode",
+        "type": "BoolType",
+        "description": "If true, queries will not return content marked as sensative",
+        "default": true
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Any list of signals."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": "Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/)."
+      }
+    },
     "commands": {}
   },
   "nio/InstagramSearchByLocation": {
     "version": "0.0.1",
-    "description": "",
-    "inputs": {},
-    "outputs": {},
-    "properties": {},
+    "description": "Polls Instagram for public posts at a specified location. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
+    "properties": {
+      "client_id": {
+        "title": "Client ID",
+        "type": "StringType",
+        "description": "Client ID from Instagram API account",
+        "default": "[[INSTAGRAM_CLIENT_ID]]"
+      },
+      "include_query": {
+        "title": "Include Query Field",
+        "type": "StringType",
+        "description": "Whether to include queries in request to Instagram.",
+        "default": null
+      },
+      "lookback": {
+        "title": "Lookback Period",
+        "type": "TimeDeltaType",
+        "description": "On block start, look back this amount of time to grab old posts.",
+        "default": {
+          "seconds": 300
+        }
+      },
+      "polling_interval": {
+        "title": "Polling Interval",
+        "type": "TimeDeltaType",
+        "description": "How often Instagram is polled. When using more than one query. Each query will be polled at a period equal to the *polling interval* times the number of queries.",
+        "default": {
+          "seconds": 20
+        }
+      },
+      "queries": {
+        "title": "Query Strings",
+        "type": "ListType",
+        "description": "List of locations to search public posts for.",
+        "default": []
+      },
+      "retry_interval": {
+        "title": "Retry Interval",
+        "type": "TimeDeltaType",
+        "description": "When a url request fails, how long to wait before attempting to try again.",
+        "default": {
+          "seconds": 60
+        }
+      },
+      "retry_limit": {
+        "title": "Retry Limit",
+        "type": "IntType",
+        "description": "Number of times to retry on a poll.",
+        "default": 3
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Any list of signals."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": "Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/)."
+      }
+    },
     "commands": {}
   },
   "nio/InstagramSearchByRadius": {
     "version": "0.0.1",
-    "description": "",
-    "inputs": {},
-    "outputs": {},
-    "properties": {},
+    "description": "Polls Instagram for public posts in a specified radius around latitudes/longitudes. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
+    "properties": {
+      "client_id": {
+        "title": "Client ID",
+        "type": "StringType",
+        "description": "Client ID from Instagram API account",
+        "default": "[[INSTAGRAM_CLIENT_ID]]"
+      },
+      "include_query": {
+        "title": "Include Query Field",
+        "type": "StringType",
+        "description": "Whether to include queries in request to Instagram.",
+        "default": null
+      },
+      "lookback": {
+        "title": "Lookback Period",
+        "type": "TimeDeltaType",
+        "description": "On block start, look back this amount of time to grab old posts.",
+        "default": {
+          "seconds": 300
+        }
+      },
+      "polling_interval": {
+        "title": "Polling Interval",
+        "type": "TimeDeltaType",
+        "description": "How often Instagram is polled. When using more than one query. Each query will be polled at a period equal to the *polling interval* times the number of queries.",
+        "default": {
+          "seconds": 20
+        }
+      },
+      "queries": {
+        "title": "Locations",
+        "type": "ListType",
+        "description": "List of latitudes, longitudes, and radii to search public posts for.",
+        "default": []
+      },
+      "retry_interval": {
+        "title": "Retry Interval",
+        "type": "TimeDeltaType",
+        "description": "When a url request fails, how long to wait before attempting to try again.",
+        "default": {
+          "seconds": 60
+        }
+      },
+      "retry_limit": {
+        "title": "Retry Limit",
+        "type": "IntType",
+        "description": "Number of times to retry on a poll.",
+        "default": 3
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Any list of signals."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": "Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/)."
+      }
+    },
     "commands": {}
   },
   "nio/InstagramSearchByUser": {
     "version": "0.0.1",
-    "description": "",
-    "inputs": {},
-    "outputs": {},
-    "properties": {},
+    "description": "Polls Instagram for public posts by a specified user. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
+    "properties": {
+      "client_id": {
+        "title": "Client ID",
+        "type": "StringType",
+        "description": "Client ID from Instagram API account",
+        "default": "[[INSTAGRAM_CLIENT_ID]]"
+      },
+      "include_query": {
+        "title": "Include Query Field",
+        "type": "StringType",
+        "description": "Whether to include queries in request to Instagram.",
+        "default": null
+      },
+      "lookback": {
+        "title": "Lookback Period",
+        "type": "TimeDeltaType",
+        "description": "On block start, look back this amount of time to grab old posts.",
+        "default": {
+          "seconds": 300
+        }
+      },
+      "polling_interval": {
+        "title": "Polling Interval",
+        "type": "TimeDeltaType",
+        "description": "How often Instagram is polled. When using more than one query. Each query will be polled at a period equal to the *polling interval* times the number of queries.",
+        "default": {
+          "seconds": 20
+        }
+      },
+      "queries": {
+        "title": "Query Strings",
+        "type": "ListType",
+        "description": "List of latitudes, longitudes, and radii to search public posts for.",
+        "default": []
+      },
+      "retry_interval": {
+        "title": "Retry Interval",
+        "type": "TimeDeltaType",
+        "description": "When a url request fails, how long to wait before attempting to try again.",
+        "default": {
+          "seconds": 60
+        }
+      },
+      "retry_limit": {
+        "title": "Retry Limit",
+        "type": "IntType",
+        "description": "Number of times to retry on a poll.",
+        "default": 3
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Any list of signals."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": "Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/)."
+      }
+    },
     "commands": {}
   }
 }

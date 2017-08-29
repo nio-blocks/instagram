@@ -1,10 +1,14 @@
-from ..instagram_block import Instagram
-from ..http_blocks.rest.rest_block import RESTPolling
-from unittest.mock import patch, Mock
-from nio.testing.block_test_case import NIOBlockTestCase
 from threading import Event
+from unittest.mock import patch, Mock
+
+from nio.testing.block_test_case import NIOBlockTestCase
+from nio.util.discovery import not_discoverable
+
+from ..rest_polling.rest_block import RESTPolling
+from ..instagram_block import Instagram
 
 
+@not_discoverable
 class InstagramEpilogueEvent(Instagram):
 
     def __init__(self, event):

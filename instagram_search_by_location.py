@@ -1,9 +1,10 @@
-from .instagram_search_by import InstagramSearchByBase
-from nio.util.discovery import discoverable
 import re
 
+from nio.properties import VersionProperty
 
-@discoverable
+from .instagram_search_by import InstagramSearchByBase
+
+
 class InstagramSearchByLocation(InstagramSearchByBase):
 
     """ This block polls the Instagram API, searching for all posts
@@ -20,6 +21,7 @@ class InstagramSearchByLocation(InstagramSearchByBase):
     URL_FORMAT = ("https://api.instagram.com/v1/locations"
                   "/{0}/media/recent?count=50&client_id={1}&min_timestamp={2}")
 
+    version = VersionProperty("0.0.1")
     RESOURCE_URL_FORMAT = ("https://api.instagram.com/v1"
                            "/locations/search?{0}&client_id={1}")
 
@@ -46,6 +48,5 @@ class InstagramSearchByLocation(InstagramSearchByBase):
     def _extract_resource_id(self, locations, query):
         if locations:
             _id = locations[0].get('id', None)
-            self.logger.debug("Got id {0} for resource {1}"
-                               .format(_id, query))
+            self.logger.debug("Got id {0} for resource {1}".format(_id, query))
             return _id

@@ -1,9 +1,10 @@
-from .http_blocks.rest.rest_block import RESTPolling
-from nio.util.discovery import discoverable
-from nio.properties import PropertyHolder, StringProperty, \
-    ObjectProperty, BoolProperty
-from nio.signal.base import Signal
 import requests
+
+from nio.properties import PropertyHolder, StringProperty, \
+    ObjectProperty, BoolProperty, VersionProperty
+from nio.signal.base import Signal
+
+from .rest_polling.rest_block import RESTPolling
 
 
 class APICredentials(PropertyHolder):
@@ -19,7 +20,6 @@ class InstagramSignal(Signal):
             setattr(self, k, data[k])
 
 
-@discoverable
 class Instagram(RESTPolling):
 
     """ This block polls the Instagram API, searching for posts
@@ -34,6 +34,7 @@ class Instagram(RESTPolling):
     # Try to grab 50 in case they up the limit
     URL_FORMAT = ("https://api.instagram.com/v1/tags"
                   "/{0}/media/recent?count=50&client_id={1}&min_tag_id={2}")
+    version = VersionProperty("0.0.1")
 
     creds = ObjectProperty(APICredentials, title='Credentials')
     safe_mode = BoolProperty(title='Safe Mode', default=True)
@@ -126,8 +127,9 @@ class Instagram(RESTPolling):
             resp = requests.get(url)
             resp = resp.json()
             self.min_tag_id = resp['pagination']['min_tag_id']
-            self.logger.debug("Initialized min_tag_id to {0} for query: {1}"
-                               .format(self.min_tag_id, self.current_query))
+            self.logger.debug(
+                "Initialized min_tag_id to {0} for query: {1}".format(
+                    self.min_tag_id, self.current_query))
             # And make a second request since the initial min_tag_id is
             # not always accurate the first time. Try it and see for yourself!
             url = self.URL_FORMAT.format(self.current_query,
@@ -147,17 +149,17 @@ class Instagram(RESTPolling):
         if 'min_tag_id' in pagination and pagination['min_tag_id'] > \
                 self.min_tag_id:
             self.min_tag_id = pagination['min_tag_id']
-            self.logger.debug("Updating min_tag_id to {0} for query: {1}"
-                               .format(self.min_tag_id, self.current_query))
+            self.logger.debug(
+                "Updating min_tag_id to {0} for query: {1}".format(
+                    self.min_tag_id, self.current_query))
 
     def _check_paging(self, pagination):
         if self.safe_mode() and \
                 self.page_num >= self.polling_interval().total_seconds():
             # Don't let a single query page too many times if in safe mode.
-            self.logger.warning("Safe Mode: #{} is paging too many times:"
-                                 " {}".format(self.current_query,
-                                              self.page_num)
-                                 )
+            self.logger.warning(
+                "Safe Mode: #{} is paging too many times: {}".format(
+                    self.current_query, self.page_num))
             return False
         if 'next_url' in pagination:
             self.url = pagination['next_url']
