@@ -1,12 +1,14 @@
-from .http_blocks.rest.rest_block import RESTPolling
-from nio.properties.string import StringProperty
-from nio.properties.timedelta import TimeDeltaProperty
-from nio.signal.base import Signal
-from nio.block.mixins.persistence.persistence import Persistence
-from datetime import datetime
 import requests
+from datetime import datetime
+
+from nio.properties import StringProperty, TimeDeltaProperty, VersionProperty
+from nio.signal.base import Signal
+from nio.util.discovery import not_discoverable
+
+from .rest_polling.rest_block import RESTPolling
 
 
+@not_discoverable
 class InstagramSearchByBase(RESTPolling):
 
     """ This block polls the Instagram API, searching for all posts
@@ -18,9 +20,11 @@ class InstagramSearchByBase(RESTPolling):
 
     """
 
+    version = VersionProperty("0.0.1")
     client_id = StringProperty(title="Client ID",
                                default="[[INSTAGRAM_CLIENT_ID]]")
-    lookback = TimeDeltaProperty(default={"seconds":300}, title="Lookback Period")
+    lookback = TimeDeltaProperty(
+        default={"seconds": 300}, title="Lookback Period")
 
     RESOURCE_URL_FORMAT = None
 
@@ -115,8 +119,8 @@ class InstagramSearchByBase(RESTPolling):
         resp = self._make_request(resource_url)
         if resp is None:
             # try again if the response was bad.
-            self.logger.debug("Attempting immediate retry to get id"
-                               " for: {0}".format(query))
+            self.logger.debug(
+                "Attempting immediate retry to get id for: {0}".format(query))
             resp = self._make_request(resource_url)
             if resp is None:
                 # if the response is still bad, give up.

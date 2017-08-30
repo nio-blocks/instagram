@@ -1,8 +1,10 @@
-from ..instagram_search_by_user_block import InstagramSearchByUser
-from ..http_blocks.rest.rest_block import RESTPolling
-from unittest.mock import patch, Mock
-from nio.testing.block_test_case import NIOBlockTestCase
 from requests import Response
+from unittest.mock import patch, Mock
+
+from nio.testing.block_test_case import NIOBlockTestCase
+from ..rest_polling.rest_block import RESTPolling
+
+from ..instagram_search_by_user_block import InstagramSearchByUser
 
 
 class TestInstagramSearchByUser(NIOBlockTestCase):

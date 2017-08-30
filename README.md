@@ -1,106 +1,133 @@
 Instagram
-=======
-
-Get public posts from Instagram. These blocks will poll the [Instagram API](https://www.instagram.com/developer/) at the configured `polling_interval`. Search by hashtag or username.
-
--   [Instagram](https://github.com/nio-blocks/instagram#instagram)
--   [InstagramSearchByUser](https://github.com/nio-blocks/instagram#instagramsearchbyuser)
-
-***
-
-Instagram
 =========
-
 Polls Instagram for public posts, given a hashtag. The hashtag can be in either the caption or comments. Official documentation of [Instagram API hashtags](http://instagram.com/developer/endpoints/tags/).
 
 Properties
---------------
+----------
+- **creds**: API credentials.
+- **include_query**: Whether to include queries in request to Instagram.
+- **polling_interval**: How often Instagram is polled. When using more than one query. Each query will be polled at a period equal to the *polling interval* times the number of queries.
+- **queries**: List of hashtags to search public posts for.
+- **retry_interval**: When a url request fails, how long to wait before attempting to try again.
+- **retry_limit**: Number of times to retry on a poll.
+- **safe_mode**: If true, queries will not return content marked as sensative
 
--   **queries**: List of hashtags to search public posts for.
--   **creds**: API credentials.
--   **polling_interval**: How often API is polled. When using more than one query. Each query will be polled at a period equal to the `polling_interval` times the number of `queries`.
--   **retry_interval**: When a url request fails, how long to wait before attempting to try again.
--   **retry_limit**: When a url request fails, number of times to attempt a retry before giving up.
+Inputs
+------
+- **default**: Any list of signals.
+
+Outputs
+-------
+- **default**: Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/).
+
+Commands
+--------
+None
 
 Dependencies
-----------------
-
+------------
 -   [requests](https://pypi.python.org/pypi/requests/)
 -   [RESTPolling Block](https://github.com/nio-blocks/http_blocks/blob/master/rest/rest_block.py)
 
-Commands
-----------------
-None
+InstagramSearchByLocation
+=========================
+Polls Instagram for public posts at a specified location. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).
 
-Input
+Properties
+----------
+- **client_id**: Client ID from Instagram API account
+- **include_query**: Whether to include queries in request to Instagram.
+- **lookback**: On block start, look back this amount of time to grab old posts.
+- **polling_interval**: How often Instagram is polled. When using more than one query. Each query will be polled at a period equal to the *polling interval* times the number of queries.
+- **queries**: List of locations to search public posts for.
+- **retry_interval**: When a url request fails, how long to wait before attempting to try again.
+- **retry_limit**: Number of times to retry on a poll.
+
+Inputs
+------
+- **default**: Any list of signals.
+
+Outputs
 -------
+- **default**: Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/).
+
+Commands
+--------
 None
 
-Output
----------
-Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/). The following is a list of commonly include attributes, but note that not all will be included on every signal:
+Dependencies
+------------
+-   [requests](https://pypi.python.org/pypi/requests/)
+-   [RESTPolling Block](https://github.com/nio-blocks/http_blocks/blob/master/rest/rest_block.py)
 
-```
-{
-  id: string,
-  user: {
-    username: string
-  },
-  caption: {
-    text: string
-  },
-  link: string,
-  images: {
-    standard_resolution: {
-      url: string,
-      width: int,
-      height: int
-    }
-  },
-  user: {
-    profile_picture: string,
-    id: string
-  },
-  type: string,
-  created_time: string
-}
-```
+InstagramSearchByRadius
+=======================
+Polls Instagram for public posts in a specified radius around latitudes/longitudes. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).
 
-***
+Properties
+----------
+- **client_id**: Client ID from Instagram API account
+- **include_query**: Whether to include queries in request to Instagram.
+- **lookback**: On block start, look back this amount of time to grab old posts.
+- **polling_interval**: How often Instagram is polled. When using more than one query. Each query will be polled at a period equal to the *polling interval* times the number of queries.
+- **queries**: List of latitudes, longitudes, and radii to search public posts for.
+- **retry_interval**: When a url request fails, how long to wait before attempting to try again.
+- **retry_limit**: Number of times to retry on a poll.
+
+Inputs
+------
+- **default**: Any list of signals.
+
+Outputs
+-------
+- **default**: Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/).
+
+Commands
+--------
+None
+
+Dependencies
+------------
+-   [requests](https://pypi.python.org/pypi/requests/)
+-   [RESTPolling Block](https://github.com/nio-blocks/http_blocks/blob/master/rest/rest_block.py)
 
 InstagramSearchByUser
-=========
-
+=====================
 Polls Instagram for public posts by a specified user. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).
 
 Properties
---------------
+----------
+- **client_id**: Client ID from Instagram API account
+- **include_query**: Whether to include queries in request to Instagram.
+- **lookback**: On block start, look back this amount of time to grab old posts.
+- **polling_interval**: How often Instagram is polled. When using more than one query. Each query will be polled at a period equal to the *polling interval* times the number of queries.
+- **queries**: List of latitudes, longitudes, and radii to search public posts for.
+- **retry_interval**: When a url request fails, how long to wait before attempting to try again.
+- **retry_limit**: Number of times to retry on a poll.
 
--   **queries**: List of users to search public posts for.
--   **client_id**: API credentials.
--   **polling_interval**: How often API is polled. When using more than one query. Each query will be polled at a period equal to the `polling_interval` times the number of `queries`.
--   **retry_interval**: When a url request fails, how long to wait before attempting to try again.
--   **retry_limit**: When a url request fails, number of times to attempt a retry before giving up.
--   **lookback**: On start, lookback this amount of time and grab old posts.
+Inputs
+------
+- **default**: Any list of signals.
+
+Outputs
+-------
+- **default**: Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/).
+
+Commands
+--------
+None
 
 Dependencies
-----------------
-
+------------
 -   [requests](https://pypi.python.org/pypi/requests/)
 -   [RESTPolling Block](https://github.com/nio-blocks/http_blocks/blob/master/rest/rest_block.py)
 
-Commands
-----------------
-None
-
-Input
--------
-None
-
 Output
----------
+------
 Creates a new signal for each Instagram Post. Every field on the Post will become a signal attribute. Official documentation on the repsonse fields from Instagram [here](http://instagram.com/developer/endpoints/tags/). The following is a list of commonly include attributes, but note that not all will be included on every signal:
 
+Output Example
+--------------
 ```
 {
   id: string,
@@ -126,3 +153,4 @@ Creates a new signal for each Instagram Post. Every field on the Post will becom
   created_time: string
 }
 ```
+

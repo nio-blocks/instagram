@@ -1,8 +1,8 @@
+from nio.properties import VersionProperty
+
 from .instagram_search_by import InstagramSearchByBase
-from nio.util.discovery import discoverable
 
 
-@discoverable
 class InstagramSearchByUser(InstagramSearchByBase):
 
     """ This block polls the Instagram API, searching for all posts
@@ -21,13 +21,13 @@ class InstagramSearchByUser(InstagramSearchByBase):
 
     RESOURCE_URL_FORMAT = ("https://api.instagram.com/v1/"
                            "users/search?q={0}&client_id={1}")
+    version = VersionProperty("0.0.1")
 
     def _extract_resource_id(self, users, query):
         for user in users:
             if user.get('username').lower() == query.lower():
                 _id = user.get('id', None)
-                self.logger.debug("Got id {0} for user {1}"
-                                   .format(_id, query))
+                self.logger.debug("Got id {0} for user {1}".format(_id, query))
                 return _id
 
     def _on_failure(self, resp, paging, url):
