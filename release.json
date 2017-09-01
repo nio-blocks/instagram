@@ -2,7 +2,7 @@
   "nio/Instagram": {
     "language": "Python",
     "url": "git://github.com/nio-blocks/instagram.git",
-    "version": "0.0.1"
+    "version": "1.0.0"
   },
   "nio/InstagramSearchByLocation": {
     "language": "Python",

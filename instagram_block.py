@@ -34,7 +34,7 @@ class Instagram(RESTPolling):
     # Try to grab 50 in case they up the limit
     URL_FORMAT = ("https://api.instagram.com/v1/tags"
                   "/{0}/media/recent?count=50&client_id={1}&min_tag_id={2}")
-    version = VersionProperty("0.0.1")
+    version = VersionProperty("1.0.0")
 
     creds = ObjectProperty(APICredentials, title='Credentials')
     safe_mode = BoolProperty(title='Safe Mode', default=True)
