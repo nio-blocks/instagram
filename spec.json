@@ -2,6 +2,9 @@
   "nio/Instagram": {
     "version": "1.0.0",
     "description": "Polls Instagram for public posts, given a hashtag. The hashtag can be in either the caption or comments. Official documentation of [Instagram API hashtags](http://instagram.com/developer/endpoints/tags/).",
+    "categories": [
+      "Social Media"
+    ],
     "properties": {
       "creds": {
         "title": "Credentials",
@@ -67,6 +70,9 @@
   "nio/InstagramSearchByLocation": {
     "version": "0.0.1",
     "description": "Polls Instagram for public posts at a specified location. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
+    "categories": [
+      "Social Media"
+    ],
     "properties": {
       "client_id": {
         "title": "Client ID",
@@ -132,6 +138,9 @@
   "nio/InstagramSearchByRadius": {
     "version": "0.0.1",
     "description": "Polls Instagram for public posts in a specified radius around latitudes/longitudes. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
+    "categories": [
+      "Social Media"
+    ],
     "properties": {
       "client_id": {
         "title": "Client ID",
@@ -197,6 +206,9 @@
   "nio/InstagramSearchByUser": {
     "version": "1.0.0",
     "description": "Polls Instagram for public posts by a specified user. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
+    "categories": [
+      "Social Media"
+    ],
     "properties": {
       "client_id": {
         "title": "Client ID",
