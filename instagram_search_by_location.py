@@ -21,7 +21,7 @@ class InstagramSearchByLocation(InstagramSearchByBase):
     URL_FORMAT = ("https://api.instagram.com/v1/locations"
                   "/{0}/media/recent?count=50&client_id={1}&min_timestamp={2}")
 
-    version = VersionProperty("0.0.1")
+    version = VersionProperty("0.0.2")
     RESOURCE_URL_FORMAT = ("https://api.instagram.com/v1"
                            "/locations/search?{0}&client_id={1}")
 

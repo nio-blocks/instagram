@@ -68,7 +68,7 @@
     "commands": {}
   },
   "nio/InstagramSearchByLocation": {
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Polls Instagram for public posts at a specified location. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
     "categories": [
       "Social Media"

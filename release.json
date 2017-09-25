@@ -7,7 +7,7 @@
   "nio/InstagramSearchByLocation": {
     "language": "Python",
     "url": "git://github.com/nio-blocks/instagram.git",
-    "version": "0.0.1"
+    "version": "0.0.2"
   },
   "nio/InstagramSearchByRadius": {
     "language": "Python",
