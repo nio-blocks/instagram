@@ -21,7 +21,7 @@ class InstagramSearchByUser(InstagramSearchByBase):
 
     RESOURCE_URL_FORMAT = ("https://api.instagram.com/v1/"
                            "users/search?q={0}&client_id={1}")
-    version = VersionProperty("1.0.0")
+    version = VersionProperty("1.0.1")
 
     def _extract_resource_id(self, users, query):
         for user in users:

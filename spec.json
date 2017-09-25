@@ -204,7 +204,7 @@
     "commands": {}
   },
   "nio/InstagramSearchByUser": {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Polls Instagram for public posts by a specified user. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
     "categories": [
       "Social Media"
