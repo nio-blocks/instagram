@@ -136,7 +136,7 @@
     "commands": {}
   },
   "nio/InstagramSearchByRadius": {
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Polls Instagram for public posts in a specified radius around latitudes/longitudes. Official documentation of [User Instagram API](http://instagram.com/developer/endpoints/users/).",
     "categories": [
       "Social Media"

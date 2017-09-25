@@ -27,7 +27,7 @@ class InstagramSearchByRadius(InstagramSearchByBase):
                   "/search?{0}&count=50&client_id={1}&min_timestamp={2}")
 
     queries = ListProperty(LocationRadius, title='Locations')
-    version = VersionProperty("0.0.1")
+    version = VersionProperty("0.0.2")
 
     def __init__(self):
         super().__init__()
